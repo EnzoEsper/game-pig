@@ -30,22 +30,54 @@ document.querySelector('.btn-roll').addEventListener('click', function(){
     document.querySelector('#current-' + activePlayer).textContent = roundScore; 
   } else {
     //cambiar jugador activo
-    activePlayer === 0 ? activePlayer = 1 : activePlayer = 0;
-    roundScore = 0;
-
-    document.getElementById('current-0').textContent = '0' ;
-    document.getElementById('current-1').textContent = '0' ;
-    
-    document.querySelector('.player-0-panel').classList.toggle('active');
-    document.querySelector('.player-1-panel').classList.toggle('active');
-
-    setTimeout(() => {
-      diceDOM.style.display = 'none';
-    }, 500);
+    nextPlayer();
   }
 
 })
 
+document.querySelector('.btn-hold').addEventListener('click', function(){
+  
+  //Anadir puntaje actual al global
+  scores[activePlayer] += roundScore;
+
+  //actualizar la UI
+  document.getElementById('score-' + activePlayer).textContent = scores[activePlayer];
+
+  // verificar si el jugadro gano el juego
+  if (scores[activePlayer] >= 20) {
+    document.getElementById('name-' + activePlayer).innerHTML = '<b>WINNER!<b>';
+    
+    document.querySelector('.player-' + activePlayer + '-panel').classList.remove('active');
+    
+    document.querySelector('.player-' + activePlayer + '-panel').classList.add('winner');
+    
+    setTimeout(() => {
+      diceDOM.style.display = 'none';
+    }, 500);
+  } else {
+    //cambiar jugador activo  
+    nextPlayer();
+  }
+
+  
+})
+
+//cambia de jugador activo
+function nextPlayer(){
+  activePlayer === 0 ? activePlayer = 1 : activePlayer = 0;
+  roundScore = 0;
+
+  document.getElementById('current-0').textContent = '0' ;
+  document.getElementById('current-1').textContent = '0' ;
+  
+  document.querySelector('.player-0-panel').classList.toggle('active');
+  document.querySelector('.player-1-panel').classList.toggle('active');
+
+  //cada vez que se cambia de jugador, el dado desaparece despues de medio seg.
+  setTimeout(() => {
+    diceDOM.style.display = 'none';
+  }, 500);
+};
 
 
 
