@@ -1,54 +1,63 @@
 
-var scores, roundScore, activePlayer;
+var scores, roundScore, activePlayer, gamePlaying;
 
 init();
 
 document.querySelector('.btn-roll').addEventListener('click', function(){
-  var dice;
+  
+  if (gamePlaying) {
+    var dice;
   // Numero aleatorio del 1 al 6 (para el dado)
-  dice = ((Math.floor(Math.random() * 6)) + 1) ;
+    dice = ((Math.floor(Math.random() * 6)) + 1) ;
 
-  diceDOM = document.querySelector('.dice') ;
-  // Aparece el dado una vez que se hace click en el boton
-  diceDOM.style.display = 'block';
-  // coloca cada imagen dependiendo de lo que contenga la variable aleatoria
-  diceDOM.src = "dice-" + dice + ".png";
+    diceDOM = document.querySelector('.dice') ;
+    // Aparece el dado una vez que se hace click en el boton
+    diceDOM.style.display = 'block';
+    // coloca cada imagen dependiendo de lo que contenga la variable aleatoria
+    diceDOM.src = "dice-" + dice + ".png";
 
-  //actualizar cada ronda dependiendo si toca o no un 1
-  if (dice !== 1) {
-    //agregar puntaje
-    roundScore += dice;
-    document.querySelector('#current-' + activePlayer).textContent = roundScore; 
-  } else {
-    //cambiar jugador activo
-    nextPlayer();
+    //actualizar cada ronda dependiendo si toca o no un 1
+    if (dice !== 1) {
+      //agregar puntaje
+      roundScore += dice;
+      document.querySelector('#current-' + activePlayer).textContent = roundScore; 
+    } else {
+      //cambiar jugador activo
+      nextPlayer();
+    }
   }
+  
 
 })
 
 document.querySelector('.btn-hold').addEventListener('click', function(){
   
-  //Anadir puntaje actual al global
-  scores[activePlayer] += roundScore;
+  if (gamePlaying && roundScore !== 0) {
+    //Anadir puntaje actual al global
+    scores[activePlayer] += roundScore;
 
-  //actualizar la UI
-  document.getElementById('score-' + activePlayer).textContent = scores[activePlayer];
+    //actualizar la UI
+    document.getElementById('score-' + activePlayer).textContent = scores[activePlayer];
 
-  // verificar si el jugadro gano el juego
-  if (scores[activePlayer] >= 20) {
-    document.getElementById('name-' + activePlayer).innerHTML = '<b>WINNER!<b>';
-    
-    document.querySelector('.player-' + activePlayer + '-panel').classList.remove('active');
-    
-    document.querySelector('.player-' + activePlayer + '-panel').classList.add('winner');
-    
-    setTimeout(() => {
-      diceDOM.style.display = 'none';
-    }, 500);
-  } else {
-    //cambiar jugador activo  
-    nextPlayer();
+    // verificar si el jugadro gano el juego
+    if (scores[activePlayer] >= 20) {
+      document.getElementById('name-' + activePlayer).innerHTML = '<b>WINNER!<b>';
+      
+      document.querySelector('.player-' + activePlayer + '-panel').classList.remove('active');
+      
+      document.querySelector('.player-' + activePlayer + '-panel').classList.add('winner');
+      
+      setTimeout(() => {
+        diceDOM.style.display = 'none';
+      }, 500);
+
+      gamePlaying = false;
+    } else {
+      //cambiar jugador activo  
+      nextPlayer();
+    }
   }
+  
 
   
 })
@@ -76,6 +85,7 @@ function init(){
   scores = [0,0];
   roundScore = 0;
   activePlayer = 0;
+  gamePlaying = true;
 
   document.querySelector('.dice').style.display = 'none';
 
